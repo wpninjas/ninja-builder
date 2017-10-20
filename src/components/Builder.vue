@@ -1,20 +1,17 @@
 <template lang="html">
     <div class="ninja-builder">
-        <header class="topbar">
-            <div class="wrap">
-                <div class="title">
-                    <slot name="title">{{ title }}</slot>
-                </div>
+        <div class="topbar">
+            <div class="title">
+                <slot name="title">{{ title }}</slot>
             </div>
-        </header>
-        <nav>
-            <div class="wrap">
-                <slot name="nav"></slot>
-            </div>
-        </nav>
-        <main>
-            <slot></slot>
-        </main>
+        </div>
+        <div style="padding: 0 40px;">
+            <slot name="header"></slot>
+            <main>
+                <slot></slot>
+            </main>
+            <slot name="footer"></slot>
+        </div>
     </div>
 </template>
 
@@ -39,6 +36,13 @@ export default {
 .button-primary {
     background-color: #1EA9EA;
 }
+.button-drawer {
+    font-size: 1.2em;
+    border-radius: 50%;
+    padding: 15px 25px 20px;
+    position: fixed;
+    right: 40px; bottom: 40px;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -51,20 +55,17 @@ export default {
     font-size: 16px;
     font-family: "Segoe UI";
 }
-header {
+.topbar {
     display: block;
     height: 52px;
     line-height: 52px;
-    margin-bottom: 40px;
+    padding: 0 40px;
+    margin-bottom: 30px;
     background-color: #ebedee;
 }
 
 .title {
     height: 52px; // Match the header height;
-}
-
-nav {
-    margin-bottom: 40px;
 }
 
 main {

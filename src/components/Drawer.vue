@@ -1,18 +1,15 @@
 <template lang="html">
     <div class="ninja-drawer" v-bind:class="{ hasChild: $route.meta.childDrawer && ! child }">
         <header>
-            <template v-if="! child">
-                <router-link to="/content" class="button button-primary">Close</router-link>
-            </template>
-            <template v-else>
-                <router-link to="/content/drawer" class="button button-primary">Back</router-link>
+            <template v-if="backroute">
+                <router-link :to="backroute" class="button button-primary">Close</router-link>
             </template>
         </header>
         <main>
             <slot></slot>
         </main>
         <footer>
-            [DRAWER FOOTER]
+            <slot name="footer"></slot>
         </footer>
     </div>
 </template>
@@ -20,7 +17,7 @@
 <script>
 import { RouterLink } from 'vue-router';
 export default {
-    props: [ 'child' ]
+    props: [ 'child', 'backroute' ]
 }
 </script>
 
@@ -38,6 +35,7 @@ export default {
 }
 header {
     display: flex;
+    margin-bottom: 40px;
     flex-direction:row-reverse;
 }
 .child-drawer {

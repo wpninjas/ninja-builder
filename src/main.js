@@ -8,25 +8,115 @@ Vue.use( NinjaBuilder )
 
 // Global object data store.
 window.data = {
+    fields: [
+        { id: 1, label: 'Full Name', required: false, settings: [
+            { key: 'label' },
+            { key: 'required' },
+        ]},
+        { id: 2, label: 'Email Address', required: false, settings: [
+            { key: 'label' },
+            { key: 'required' },
+        ]},
+        { id: 3, label: 'Submit', settings: [
+            { key: 'label' },
+        ]},
+    ],
+    field: function( fieldID ){
+        return this.fields.find( function( field ){
+            return field.id == fieldID;
+        });
+    }
 }
 
-var Content = {
-    template: '<div class="wrap">[CONTENT]<router-view /></div>'
+var Fields = {
+    props: [ 'fields' ],
+    template: `
+    <div class="wrap">
+        <div style="max-width: 100%;width: 600px;">
+            <template v-for="field in fields">
+                <router-link :to="{ name: 'fieldEdit', params: { id: field.id } }" tag="div">
+                    <div style="background: #fff;border: 1px solid #ccc;border-radius: 4px;color: #888;cursor: pointer;margin-bottom: 20px;padding: 15px 20px;position: relative;">
+                        {{ field.label }}
+                    </div>
+                </router-link>
+            </template>
+        </div>
+        <router-link to="/fields/add" class="button button-primary button-drawer">+</router-link>
+        <router-view />
+    </div>
+    `
 }
-var Drawer = {
-    template: '<ninja-drawer>[DRAWER]<router-view /></ninja-drawer>'
+var FieldAdd = {
+    props: [ 'fields' ],
+    template: `
+    <ninja-drawer backroute="/fields">
+        <div style="display: grid;grid-template-columns: 1fr 1fr;">
+            <template v-for="field in fields">
+                <div style="background: #3b454d;border-radius: 4px;color: #a2a5a8;font-size: 14px;padding:10px;margin: 0 10px 10px; position: relative;text-align: center;">
+                    {{ field }}
+                </div>
+            </template>
+        </div>
+    </ninja-drawer>
+    `,
 }
-var ChildDrawer = {
-    template: '<ninja-drawer :child="true">[CHILD DRAWER]</ninja-drawer>'
+var FieldEdit = {
+    props: [ 'id' ],
+    template: `
+    <ninja-drawer backroute="/fields">
+        <ul>
+            <li>ID: {{ field.id }}</li>
+            <li>Label: {{ field.label }}</li>
+        </ul>
+        <router-view />
+    </ninja-drawer>
+    `,
+    computed: {
+        field: function(){
+            return data.field( this.id );
+        }
+    }
 }
+var Actions = {
+    template: '<div class="wrap">[Action LIST]</div>'
+}
+var Example = { template: `
+    <div style="margin-top:40px;">
+        <div style="text-align: center;color: #ebedee;">This section intentionally left blank.</div>
+        <router-link to="/example/drawer" class="button button-primary button-drawer">+</router-link>
+        <router-view />
+    </div>
+    `
+}
+var ExampleDrawer = { template: `
+    <ninja-drawer backroute="/example">
+        <div style="text-align: center">
+            [Drawer Contents]<br />
+            <router-link to="/example/drawer/child">Open Child Drawer</router-link>
+        </div>
+        <router-view />
+    </ninja-drawer>
+    `
+}
+var ExampleChildDrawer = { template: '<ninja-drawer :child="true" backroute="/example/drawer">[Child Drawer Contents]</ninja-drawer>' };
 
 var routes = [
-    { path: '/', redirect: '/content' },
-    { path: '/content', component: Content, children: [
-        // The drawer is a child of the content.
-        { path: 'drawer', component: Drawer, children: [
-            // The child drawer is a child of the drawer.
-            { path: 'child', component: ChildDrawer, meta: { childDrawer: true } }
+    // Root Redirect
+    { path: '/', redirect: '/fields' },
+
+    // FIELDS
+    { name: 'fields', path: '/fields', component: Fields, props: { fields: data.fields }, children: [
+        { path: 'add', component: FieldAdd, props: { fields: [ 'textbox', 'checkbox', 'textarea', 'select', 'email', 'submit' ] } },
+        { name: 'fieldEdit', path: ':id/edit', component: FieldEdit, props: true }
+    ] },
+
+    // Actions
+    { name: 'actions', path: '/actions', component: Actions },
+
+    // Example (with Child Drawer)
+    { name: 'example', path: '/example', component: Example, children: [
+        { path: 'drawer', component: ExampleDrawer, children: [
+            { path: 'child', component: ExampleChildDrawer, meta: { 'childDrawer': true } }
         ] }
     ] },
 ]
@@ -41,11 +131,14 @@ new Vue({
   render: h => h({
       template: `
         <ninja-builder>
-            <template slot="nav">
-                <router-link to="/content">Content</router-link>
-                <router-link to="/content/drawer">Drawer</router-link>
-                <router-link to="/content/drawer/child">Child Drawer</router-link>
-            </template>
+            <header>
+                <ninja-nav>
+                    <router-link to="/fields">Form Fields</router-link>
+                    <router-link to="/actions">Emails & Actions</router-link>
+                    <router-link to="/example">Example</router-link>
+                </ninja-nav>
+                <h2 style="display: block;font-size:1.3em;font-weight: 600;">Contact Form</h2>
+            </header>
             <router-view />
         </ninja-builder>
       `
