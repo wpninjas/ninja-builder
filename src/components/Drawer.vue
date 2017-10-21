@@ -52,11 +52,6 @@ export default {
         z-index: 0;
     }
 
-    // Hide header (ie Close), but maintain spacing.
-    &.hasChild > header {
-        visibility: hidden;
-    }
-
     // [Hack] Cover potential gaps in transition timing.
     &:after {
         content: ' ';
@@ -79,5 +74,19 @@ header {
 }
 .drawer-enter, .drawer-leave-to {
     margin-right: -50%;
+}
+.hasChild {
+    &.drawer-leave-to .ninja-drawer {
+        // Also transition nested drawer.
+        margin-right: -50%;
+    }
+    &.drawer-leave-active {
+        // Double transition time to account for nested drawer.
+        transition: margin-right .8s;
+    }
+    &.drawer-leave-to {
+        // Double transition distance to account for nested drawer.
+        margin-right: -100%;
+    }
 }
 </style>
