@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import NinjaBuilder from './index';
-import { Builder } from './index';
 
 Vue.use( VueRouter );
 Vue.use( NinjaBuilder )
@@ -25,14 +24,15 @@ window.data = {
         return this.fields.find( function( field ){
             return field.id == fieldID;
         });
-    }
+    },
+    fieldTypes: [ 'textbox', 'checkbox', 'textarea', 'select', 'email', 'submit' ]
 }
 
 var Fields = {
     props: [ 'fields' ],
     template: `
     <div class="wrap">
-        <div style="max-width: 100%;width: 600px;">
+        <div style="max-width: 100%;width: 600px;margin:auto;">
             <template v-for="field in fields">
                 <router-link :to="{ name: 'fieldEdit', params: { id: field.id } }" tag="div">
                     <div style="background: #fff;border: 1px solid #ccc;border-radius: 4px;color: #888;cursor: pointer;margin-bottom: 20px;padding: 15px 20px;position: relative;">
@@ -47,11 +47,11 @@ var Fields = {
     `
 }
 var FieldAdd = {
-    props: [ 'fields' ],
+    props: [ 'fieldTypes' ],
     template: `
     <ninja-drawer backroute="/fields">
         <div style="display: grid;grid-template-columns: 1fr 1fr;">
-            <template v-for="field in fields">
+            <template v-for="field in fieldTypes">
                 <div style="background: #3b454d;border-radius: 4px;color: #a2a5a8;font-size: 14px;padding:10px;margin: 0 10px 10px; position: relative;text-align: center;">
                     {{ field }}
                 </div>
@@ -82,7 +82,7 @@ var Actions = {
 }
 var Example = { template: `
     <div style="margin-top:40px;">
-        <div style="text-align: center;color: #ebedee;">This section intentionally left blank.</div>
+        <div style="text-align: center;color: #bcbdbe;">This section intentionally left blank.</div>
         <router-link to="/example/drawer" class="button button-primary button-drawer">+</router-link>
         <router-view />
     </div>
@@ -98,7 +98,12 @@ var ExampleDrawer = { template: `
     </ninja-drawer>
     `
 }
-var ExampleChildDrawer = { template: '<ninja-drawer :child="true" backroute="/example/drawer">[Child Drawer Contents]</ninja-drawer>' };
+var ExampleChildDrawer = { template: `
+    <ninja-drawer :child="true" backroute="/example/drawer">
+        [Child Drawer Contents]
+    </ninja-drawer>
+    `
+};
 
 var routes = [
     // Root Redirect
@@ -106,8 +111,8 @@ var routes = [
 
     // FIELDS
     { name: 'fields', path: '/fields', component: Fields, props: { fields: data.fields }, children: [
-        { path: 'add', component: FieldAdd, props: { fields: [ 'textbox', 'checkbox', 'textarea', 'select', 'email', 'submit' ] } },
-        { name: 'fieldEdit', path: ':id/edit', component: FieldEdit, props: true }
+        { path: 'add', component: FieldAdd, props: { fieldTypes: data.fieldTypes  },  meta: { 'drawer': true } },
+        { name: 'fieldEdit', path: ':id/edit', component: FieldEdit, props: true,  meta: { 'drawer': true } }
     ] },
 
     // Actions
@@ -115,8 +120,8 @@ var routes = [
 
     // Example (with Child Drawer)
     { name: 'example', path: '/example', component: Example, children: [
-        { path: 'drawer', component: ExampleDrawer, children: [
-            { path: 'child', component: ExampleChildDrawer, meta: { 'childDrawer': true } }
+        { path: 'drawer', component: ExampleDrawer, meta: { 'drawer': true }, children: [
+            { path: 'child', component: ExampleChildDrawer, meta: { 'drawer': true, 'childDrawer': true } }
         ] }
     ] },
 ]
@@ -131,7 +136,7 @@ new Vue({
   render: h => h({
       template: `
         <ninja-builder>
-            <header>
+            <header slot="header">
                 <ninja-nav>
                     <router-link to="/fields">Form Fields</router-link>
                     <router-link to="/actions">Emails & Actions</router-link>

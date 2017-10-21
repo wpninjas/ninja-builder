@@ -7,7 +7,7 @@
         </div>
         <div style="padding: 0 40px;">
             <slot name="header"></slot>
-            <main>
+            <main class="container" v-bind:class="{ drawer: this.$route.meta.drawer }">
                 <slot></slot>
             </main>
             <slot name="footer"></slot>
@@ -68,7 +68,25 @@ export default {
     height: 52px; // Match the header height;
 }
 
-main {
-    // This section intentionally left blank.
+.container {
+    animation-duration: .4s;
+    animation-name: slide-center;
+}
+.container.drawer {
+    width: 50%;
+    animation-duration: .4s;
+    animation-name: slide-left;
+}
+.container.drawer .wrap {
+    margin-right: 50%;
+}
+
+@keyframes slide-left {
+    from { margin-left: 25%; }
+    to { margin-left: 0; }
+}
+@keyframes slide-center {
+    from { margin-right: 25%; }
+    to { margin-right: 0; }
 }
 </style>
