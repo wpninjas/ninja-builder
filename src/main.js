@@ -90,9 +90,15 @@ var Example = { template: `
 }
 var ExampleDrawer = { template: `
     <ninja-drawer backroute="/example">
-        <div style="text-align: center">
-            [Drawer Contents]<br />
-            <router-link to="/example/drawer/child">Open Child Drawer</router-link>
+        <div>
+            <div style="margin-bottom:10px;">
+                <label style="display:block;margin-bottom:10px;">Setting</label>
+                <input style="width:100%;padding:15px;border:0;" placeholder="Lorem ipsum" />
+            </div>
+            <fieldset style="border-color: #d3d5d6;border-radius: 2px;padding:20px;">
+                <legend>Section</legend>
+                <router-link to="/example/drawer/child">Open Child Drawer</router-link>
+            </fieldset>
         </div>
         <router-view />
     </ninja-drawer>
