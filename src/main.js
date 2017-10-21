@@ -95,7 +95,7 @@ var ExampleDrawer = { template: `
                 <label style="display:block;margin-bottom:10px;">Setting</label>
                 <input style="width:100%;padding:15px;border:0;" placeholder="Lorem ipsum" />
             </div>
-            <fieldset style="border-color: #d3d5d6;border-radius: 2px;padding:20px;">
+            <fieldset style="border-color:#EBEDEE;border-radius:2px;padding:20px;">
                 <legend>Section</legend>
                 <router-link to="/example/drawer/child">Open Child Drawer</router-link>
             </fieldset>
