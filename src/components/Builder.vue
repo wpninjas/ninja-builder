@@ -37,11 +37,21 @@ export default {
     background-color: #1EA9EA;
 }
 .button-drawer {
-    font-size: 1.2em;
+    font-size: 1.5em;
     border-radius: 50%;
-    padding: 15px 25px 20px;
+    height: 60px;
+    width: 60px;
+    line-height: 55px;
+    text-align: center;
+    padding: 0;
     position: fixed;
     right: 40px; bottom: 40px;
+    transition: transform .4s;
+
+    &:hover {
+        transform: rotate( 180deg );
+        transform-origin: center;
+    }
 }
 </style>
 
